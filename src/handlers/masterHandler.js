@@ -28,7 +28,7 @@ async function takeOrderHandler(ctx) {
     }
 
     const orderId = parseInt(ctx.match[1], 10);
-    const result = await orderSvc.claimOrder(ctx.telegram, orderId, master.id);
+    const result = await orderSvc.claimOrder({ telegram: ctx.telegram }, orderId, master.id);
 
     if (!result.success) {
         return ctx.answerCbQuery('😔 Заказ уже взят другим мастером.', { show_alert: true });
