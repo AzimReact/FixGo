@@ -68,7 +68,7 @@ const createOrderWizard = new Scenes.WizardScene(
 
         if (priceType === 'fixed') {
             await ctx.editMessageText('✅ Тип цены: Фиксированная');
-            await ctx.reply('Введите сумму (только цифры, в рублях):');
+            await ctx.reply('Введите сумму (только цифры, в сомах):');
             return ctx.wizard.next();
         }
 
