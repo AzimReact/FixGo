@@ -11,7 +11,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 const { startHandler, roleSelectHandler } = require('./handlers/startHandler');
 const { createOrderWizard } = require('./handlers/createOrderWizard');
 const { myOrdersHandler } = require('./handlers/clientHandler');
-const { takeOrderHandler, subscribeMockHandler, mySubscriptionHandler } = require('./handlers/masterHandler');
+const { takeOrderHandler, subscribeMockHandler, mySubscriptionHandler, statusHandler } = require('./handlers/masterHandler');
 
 // ── Validate ENV ──────────────────────────────────────────────
 const { BOT_TOKEN, WEBHOOK_URL, PORT = 3000 } = process.env;
@@ -43,6 +43,7 @@ bot.hears('📝 Создать заказ', async (ctx) => {
 });
 bot.hears('📋 Мои заказы', myOrdersHandler);
 bot.hears('💳 Моя подписка', mySubscriptionHandler);
+bot.hears('📊 Статус', statusHandler);
 
 // ── Error handler ─────────────────────────────────────────────
 bot.catch(errorHandler);

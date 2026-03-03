@@ -88,4 +88,22 @@ async function mySubscriptionHandler(ctx) {
     );
 }
 
-module.exports = { takeOrderHandler, subscribeMockHandler, mySubscriptionHandler };
+/**
+ * "📊 Статус" text button — сводка по мастеру
+ */
+async function statusHandler(ctx) {
+    const status = await subscriptionSvc.getSubscriptionStatus(ctx.from.id);
+    const subLine = status.isActive
+        ? `✅ Активна до ${new Date(status.subscription.expires_at).toLocaleDateString('ru-RU')}`
+        : '❌ Нет активной подписки';
+
+    return ctx.reply(
+        `📊 <b>Ваш статус</b>\n\n` +
+        `👤 ${ctx.dbUser?.full_name || ctx.from.first_name}\n` +
+        `🔧 Роль: Мастер\n` +
+        `💳 Подписка: ${subLine}`,
+        { parse_mode: 'HTML' }
+    );
+}
+
+module.exports = { takeOrderHandler, subscribeMockHandler, mySubscriptionHandler, statusHandler };
