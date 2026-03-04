@@ -48,12 +48,17 @@ bot.hears('📊 Статус', statusHandler);
 // ── Error handler ─────────────────────────────────────────────
 bot.catch(errorHandler);
 
+const adminRouter = require('./routes/admin');
+
 // ── Express webhook server ────────────────────────────────────
 const app = express();
 app.use(express.json());
 
 // Health check for Render
 app.get('/health', (_, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
+
+// Admin routes (protected by ADMIN_SECRET)
+app.use('/admin', adminRouter);
 
 // Telegram webhook endpoint
 const webhookPath = `/telegraf/${BOT_TOKEN}`;
