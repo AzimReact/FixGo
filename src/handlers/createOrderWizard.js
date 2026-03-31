@@ -2,6 +2,7 @@
 const { Scenes, Markup } = require('telegraf');
 const usersDb = require('../db/queries/users');
 const orderService = require('../services/orderService');
+const { validateMessage } = require('../validators/task-spam-validator/validator');
 
 const CATEGORIES = [
     { key: 'plumbing', label: '🔧 Сантехника' },
@@ -49,6 +50,14 @@ const createOrderWizard = new Scenes.WizardScene(
     async (ctx) => {
         if (!ctx.message?.text) return ctx.reply('Введите описание текстом.');
         ctx.scene.state.description = ctx.message.text.trim();
+
+        const validationResult = await validateMessage(ctx.scene.state.description);
+
+        if (validationResult === 'SPAM') {
+            await ctx.reply('Это похоже на спам. Пожалуйста, опишите задачу более конкретно.');
+            return ctx.wizard.selectStep(1);
+        }
+
         await ctx.reply(
             '💰 Укажите тип цены:',
             Markup.inlineKeyboard([
