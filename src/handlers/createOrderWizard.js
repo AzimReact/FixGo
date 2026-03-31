@@ -7,7 +7,7 @@ const { validateMessage } = require('../validators/task-spam-validator/validator
 const CATEGORIES = [
     { key: 'plumbing', label: '🔧 Сантехника' },
     { key: 'electrical', label: '⚡ Электрика' },
-    { key: 'other', label: '🔨 Другое' },
+    { key: 'other', label: '🔨 Универсал' },
 ];
 
 // ──────────────────────────────────────────────────────────────
@@ -49,13 +49,19 @@ const createOrderWizard = new Scenes.WizardScene(
     // Step 2 — description
     async (ctx) => {
         if (!ctx.message?.text) return ctx.reply('Введите описание текстом.');
-        ctx.scene.state.description = ctx.message.text.trim();
+        const text = ctx.message.text.trim();
+        
+        if (text.length > 300) {
+            return ctx.reply('Описание слишком длинное (максимум 300 символов). Пожалуйста, сократите текст.');
+        }
+
+        ctx.scene.state.description = text;
 
         const validationResult = await validateMessage(ctx.scene.state.description);
 
         if (validationResult === 'SPAM') {
             await ctx.reply('Это похоже на спам. Пожалуйста, опишите задачу более конкретно.');
-            return ctx.wizard.selectStep(1);
+            return ctx.wizard.selectStep(2);
         }
 
         await ctx.reply(
@@ -84,7 +90,10 @@ const createOrderWizard = new Scenes.WizardScene(
         // negotiable — skip price input
         ctx.scene.state.price = null;
         await ctx.editMessageText('✅ Тип цены: Договорная');
-        return saveOrder(ctx);
+        await ctx.reply('Пожалуйста, поделитесь вашим номером телефона:', Markup.keyboard([
+            [Markup.button.contactRequest('📱 Поделиться контактом')]
+        ]).resize().oneTime());
+        return ctx.wizard.selectStep(5);
     },
 
     // Step 4 — price amount (only for fixed)
@@ -94,6 +103,30 @@ const createOrderWizard = new Scenes.WizardScene(
             return ctx.reply('Введите корректную сумму (число больше 0):');
         }
         ctx.scene.state.price = amount;
+        await ctx.reply('Пожалуйста, поделитесь вашим номером телефона:', Markup.keyboard([
+            [Markup.button.contactRequest('📱 Поделиться контактом')]
+        ]).resize().oneTime());
+        return ctx.wizard.next();
+    },
+
+    // Step 5 — Phone number
+    async (ctx) => {
+        let phone = '';
+        if (ctx.message?.contact) {
+            phone = ctx.message.contact.phone_number;
+        } else if (ctx.message?.text) {
+            phone = ctx.message.text.trim();
+        }
+
+        if (!phone) {
+            return ctx.reply('Пожалуйста, отправьте контакт или напишите номер телефона текстом.');
+        }
+
+        ctx.scene.state.phone = phone;
+
+        // save phone in db
+        await usersDb.updateUserPhone(ctx.from.id, phone);
+
         return saveOrder(ctx);
     }
 );

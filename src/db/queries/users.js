@@ -29,6 +29,14 @@ async function findById(id) {
     return rows[0] || null;
 }
 
+async function updateUserPhone(id, phone) {
+    const { rows } = await pool.query(
+        'UPDATE users SET phone = $1 WHERE id = $2 RETURNING *',
+        [phone, id]
+    );
+    return rows[0];
+}
+
 async function getAllMasters() {
     const { rows } = await pool.query(
         "SELECT * FROM users WHERE role = 'master'"
@@ -36,4 +44,4 @@ async function getAllMasters() {
     return rows;
 }
 
-module.exports = { upsertUser, findById, getAllMasters };
+module.exports = { upsertUser, findById, updateUserPhone, getAllMasters };

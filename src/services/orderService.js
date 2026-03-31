@@ -6,7 +6,7 @@ const subscriptionsDb = require('../db/queries/subscriptions');
 const CATEGORY_LABELS = {
     plumbing: '🔧 Сантехника',
     electrical: '⚡ Электрика',
-    other: '🔨 Другое',
+    other: '🔨 Универсал',
 };
 
 /**
@@ -71,10 +71,14 @@ async function claimOrder(bot, orderId, masterId) {
         ? `@${client.username}`
         : `<a href="tg://user?id=${client.id}">${client.full_name}</a>`;
 
+    const clientPhone = client.phone ? `📞 Тел: ${client.phone}\n` : '';
+
     await bot.telegram.sendMessage(
         masterId,
         `🎉 <b>Заказ #${order.id} ваш!</b>\n\n` +
         `👤 Клиент: ${clientContact}\n` +
+        `🆔 ID: <code>${client.id}</code>\n` +
+        clientPhone +
         `📝 ${order.description}\n` +
         `💰 ${order.price_type === 'fixed' ? `${order.price} ₽` : 'Договорная'}`,
         { parse_mode: 'HTML' }
