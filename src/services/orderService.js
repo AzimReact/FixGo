@@ -77,7 +77,6 @@ async function claimOrder(bot, orderId, masterId) {
         masterId,
         `🎉 <b>Заказ #${order.id} ваш!</b>\n\n` +
         `👤 Клиент: ${clientContact}\n` +
-        `🆔 ID: <code>${client.id}</code>\n` +
         clientPhone +
         `📝 ${order.description}\n` +
         `💰 ${order.price_type === 'fixed' ? `${order.price} ₽` : 'Договорная'}`,
@@ -89,10 +88,13 @@ async function claimOrder(bot, orderId, masterId) {
         ? `@${master.username}`
         : `<a href="tg://user?id=${master.id}">${master.full_name}</a>`;
 
+    const masterPhone = master.phone ? `📞 Тел: ${master.phone}\n` : '';
+
     await bot.telegram.sendMessage(
         order.client_id,
         `✅ <b>Мастер нашёлся!</b>\n\n` +
         `По вашему заказу #${order.id} откликнулся мастер: ${masterContact}\n` +
+        masterPhone +
         `Он скоро с вами свяжется.`,
         { parse_mode: 'HTML' }
     );

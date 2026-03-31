@@ -10,6 +10,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const { startHandler, roleSelectHandler } = require('./handlers/startHandler');
 const { createOrderWizard } = require('./handlers/createOrderWizard');
+const { registerMasterWizard } = require('./handlers/registerMasterWizard');
 const { myOrdersHandler } = require('./handlers/clientHandler');
 const { takeOrderHandler, subscribeMockHandler, mySubscriptionHandler, statusHandler } = require('./handlers/masterHandler');
 
@@ -22,7 +23,7 @@ if (!WEBHOOK_URL) throw new Error('WEBHOOK_URL is required');
 const bot = new Telegraf(BOT_TOKEN);
 
 // Stage (wizard scenes)
-const stage = new Scenes.Stage([createOrderWizard]);
+const stage = new Scenes.Stage([createOrderWizard, registerMasterWizard]);
 
 bot.use(session());
 bot.use(stage.middleware());

@@ -49,6 +49,11 @@ async function roleSelectHandler(ctx) {
     await ctx.answerCbQuery();
     const role = ctx.match[1]; // 'client' | 'master'
     const from = ctx.from;
+
+    if (role === 'master') {
+        return ctx.scene.enter('register_master');
+    }
+
     const full_name = [from.first_name, from.last_name].filter(Boolean).join(' ');
 
     await usersDb.upsertUser({
@@ -58,7 +63,7 @@ async function roleSelectHandler(ctx) {
         role,
     });
 
-    const roleLabel = role === 'client' ? '👤 Клиент' : '🔧 Мастер';
+    const roleLabel = '👤 Клиент';
     await ctx.editMessageText(
         `✅ Вы зарегистрированы как <b>${roleLabel}</b>!`,
         { parse_mode: 'HTML' }
