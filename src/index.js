@@ -78,6 +78,16 @@ async function bootstrap() {
 
     app.listen(PORT, () => {
         console.log(`[boot] Express server listening on port ${PORT}`);
+        
+        // Keep-alive ping every 14 minutes (840000 ms) to prevent Render from sleeping
+        setInterval(() => {
+            const https = require('https');
+            https.get(`${WEBHOOK_URL}/health`, (res) => {
+                console.log(`[keep-alive] Pinged /health, status: ${res.statusCode}`);
+            }).on('error', (err) => {
+                console.error('[keep-alive] Error:', err.message);
+            });
+        }, 14 * 60 * 1000);
     });
 }
 
