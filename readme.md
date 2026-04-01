@@ -13,26 +13,30 @@ FixGo — это Телеграм-бот для связи клиентов и �
 
 Для управления пользователями и заказами используется Admin API. Все запросы должны содержать секретный ключ `secret=ВАШ_СЕКРЕТ_ИЗ_ENV`.
 
+> [!IMPORTANT]
+> **Важно по URL:** Используйте не `t.me/имя_бота`, а адрес вашего сервера (хостинга), например на **Render.com**.
+> Адрес можно найти в панели управления Render (выглядит как `https://fixgo-XXXX.onrender.com`).
+
 ### 1. Выгрузка данных (CSV для Excel)
 Эти ссылки можно открывать прямо в браузере:
-- **Список пользователей:** `GET /admin/export/users?secret=xxx`
-- **Список заказов:** `GET /admin/export/orders?secret=xxx`
+- **Список пользователей:** `GET <ВАШ_URL_СЕРВЕРА>/admin/export/users?secret=xxx`
+- **Список заказов:** `GET <ВАШ_URL_СЕРВЕРА>/admin/export/orders?secret=xxx`
 
 ### 2. Управление пользователями (JSON)
-- **Посмотреть всех:** `GET /admin/users?secret=xxx` — возвращает список всех пользователей и их статус (забанен или нет).
+- **Посмотреть всех:** `GET <ВАШ_URL_СЕРВЕРА>/admin/users?secret=xxx` — возвращает список всех пользователей и их статус (забанен или нет).
 
 ### 3. Блокировка и удаление
 Для выполнения этих действий используйте `curl` или любой API клиент:
 
 *   **Забанить пользователя/мастера:**
-    `POST /admin/users/<TELEGRAM_ID>/ban?secret=xxx`
+    `POST <ВАШ_URL_СЕРВЕРА>/admin/users/<TELEGRAM_ID>/ban?secret=xxx`
     *(Заблокированные пользователи не могут пользоваться ботом, мастера перестают получать заказы)*
 
 *   **Разбанить:**
-    `POST /admin/users/<TELEGRAM_ID>/unban?secret=xxx`
+    `POST <ВАШ_URL_СЕРВЕРА>/admin/users/<TELEGRAM_ID>/unban?secret=xxx`
 
 *   **Удалить пользователя:**
-    `DELETE /admin/users/<TELEGRAM_ID>?secret=xxx`
+    `DELETE <ВАШ_URL_СЕРВЕРА>/admin/users/<TELEGRAM_ID>?secret=xxx`
     *(Полное удаление из базы данных)*
 
 ---
