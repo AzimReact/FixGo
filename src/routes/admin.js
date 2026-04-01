@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const pool = require('../db/pool');
+const usersDb = require('../db/queries/users');
 
 const router = express.Router();
 
@@ -81,6 +82,48 @@ router.get('/stats', checkSecret, async (req, res) => {
             orders.rows.map(r => [r.status, parseInt(r.count)])
         ),
     });
+});
+
+// GET /admin/users?secret=xxx — JSON-список всех пользователей
+router.get('/users', checkSecret, async (req, res) => {
+    try {
+        const users = await usersDb.getAllUsers();
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /admin/users/:id/ban?secret=xxx
+router.post('/users/:id/ban', checkSecret, async (req, res) => {
+    try {
+        const user = await usersDb.banUser(req.params.id);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json({ success: true, user });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST /admin/users/:id/unban?secret=xxx
+router.post('/users/:id/unban', checkSecret, async (req, res) => {
+    try {
+        const user = await usersDb.unbanUser(req.params.id);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json({ success: true, user });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DELETE /admin/users/:id?secret=xxx
+router.delete('/users/:id', checkSecret, async (req, res) => {
+    try {
+        await usersDb.deleteUser(req.params.id);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 module.exports = router;

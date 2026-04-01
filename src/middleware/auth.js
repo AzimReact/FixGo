@@ -14,6 +14,12 @@ async function attachUser(ctx, next) {
     // Read from DB (fast path — user already registered)
     ctx.dbUser = await usersDb.findById(from.id);
 
+    // Block banned users
+    if (ctx.dbUser && ctx.dbUser.is_banned) {
+        await ctx.reply('❌ Ваш аккаунт заблокирован.');
+        return;
+    }
+
     // If user exists, silently update username in background
     if (ctx.dbUser && ctx.dbUser.username !== from.username) {
         usersDb.upsertUser({

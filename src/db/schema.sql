@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   full_name  VARCHAR(255) NOT NULL,
   phone      VARCHAR(20),
   role       VARCHAR(10) CHECK (role IN ('client', 'master')) NOT NULL,
+  is_banned  BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
