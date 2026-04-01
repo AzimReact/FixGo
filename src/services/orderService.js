@@ -18,7 +18,7 @@ async function dispatchOrderToMasters(bot, order) {
     const masters = await usersDb.getAllMasters();
 
     const priceText = order.price_type === 'fixed'
-        ? `💰 ${order.price} ₽`
+        ? `💰 ${order.price} сом`
         : '💬 Договорная';
 
     const text =
@@ -79,7 +79,7 @@ async function claimOrder(bot, orderId, masterId) {
         `👤 Клиент: ${clientContact}\n` +
         clientPhone +
         `📝 ${order.description}\n` +
-        `💰 ${order.price_type === 'fixed' ? `${order.price} ₽` : 'Договорная'}`,
+        `💰 ${order.price_type === 'fixed' ? `${order.price} сом` : 'Договорная'}`,
         { parse_mode: 'HTML' }
     );
 

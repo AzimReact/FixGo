@@ -23,7 +23,7 @@ async function myOrdersHandler(ctx) {
     }
 
     const lines = orders.map(o => {
-        const priceText = o.price_type === 'fixed' ? `${o.price} ₽` : 'Договорная';
+        const priceText = o.price_type === 'fixed' ? `${o.price} сом` : 'Договорная';
         const masterText = o.master_name ? `👨‍🔧 ${o.master_name}` : '⏳ Ожидает мастера';
         return (
             `🆔 Заказ #${o.id}\n` +

@@ -142,7 +142,7 @@ async function saveOrder(ctx) {
         price,
     });
 
-    const priceText = price_type === 'fixed' ? `${price} ₽` : 'Договорная';
+    const priceText = price_type === 'fixed' ? `${price} сом` : 'Договорная';
     await ctx.reply(
         `✅ <b>Заказ #${order.id} создан!</b>\n\n` +
         `📂 ${orderService.CATEGORY_LABELS[category]}\n` +

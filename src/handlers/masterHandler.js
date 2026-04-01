@@ -22,7 +22,7 @@ async function takeOrderHandler(ctx) {
             ctx.from.id,
             '❌ У вас нет активной подписки. Оформите подписку, чтобы брать заказы.',
             Markup.inlineKeyboard([[
-                Markup.button.callback('💳 Оформить подписку', 'subscribe:mock'),
+                Markup.button.callback('💳 Попробовать бесплатно (1 месяц)', 'subscribe:mock'),
             ]])
         );
     }
@@ -57,7 +57,7 @@ async function subscribeMockHandler(ctx) {
     await ctx.reply(
         `✅ <b>Подписка активирована!</b>\n\n` +
         `📅 Действует до: ${expiresAt}\n` +
-        `💳 Способ оплаты: Mock (бесплатно)\n\n` +
+        `💳 Способ оплаты: Пробный период (бесплатно)\n\n` +
         `Теперь вы будете получать новые заказы.`,
         { parse_mode: 'HTML' }
     );
@@ -73,17 +73,18 @@ async function mySubscriptionHandler(ctx) {
         return ctx.reply(
             '❌ У вас нет активной подписки.\n\nОформите подписку, чтобы получать заказы:',
             Markup.inlineKeyboard([[
-                Markup.button.callback('💳 Активировать (Mock)', 'subscribe:mock'),
+                Markup.button.callback('💳 Попробовать бесплатно (1 месяц)', 'subscribe:mock'),
             ]])
         );
     }
 
     const sub = status.subscription;
     const expiresAt = new Date(sub.expires_at).toLocaleDateString('ru-RU');
+    const methodLabel = sub.payment_method === 'mock' ? 'Пробный период' : sub.payment_method;
     return ctx.reply(
         `✅ <b>Подписка активна</b>\n\n` +
         `📅 До: ${expiresAt}\n` +
-        `💳 Метод: ${sub.payment_method}`,
+        `💳 Метод: ${methodLabel}`,
         { parse_mode: 'HTML' }
     );
 }
