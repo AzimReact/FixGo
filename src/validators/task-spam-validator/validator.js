@@ -5,10 +5,6 @@ const client = new OpenAI({
 });
 
 async function validateMessage(message) {
-    // Check for suspicious keywords - if [LOL] or similar is present, return SPAM
-    if (message.includes('[LOL]')) {
-        return 'SPAM';
-    }
 
     const prompt = `
 You are a strict classifier that detects spam and offensive content in Kyrgyz and other languages.
